@@ -43,6 +43,8 @@ void tokeniseRecord(const char *input, const char *delimiter,
 
 }
 
+FITNESS_DATA data_array[100000];
+
 // Complete the main function
 int main() {
     char* filename = "FitnessData_2023.csv";
@@ -52,12 +54,10 @@ int main() {
         return 1;
     }
 
-    int buffer_size = 600;
+    int buffer_size = 1000;
     char line_buffer[buffer_size];
     int line_count;
     line_count = 0;
-
-    FITNESS_DATA data_array[3];
 
     while (fgets(line_buffer, buffer_size, file) != NULL) {
         char date[11];
