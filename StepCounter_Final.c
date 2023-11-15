@@ -37,6 +37,13 @@ void tokeniseRecord(const char *input, const char *delimiter,
 
     }
 
+    FILE* open_file(char filename[], char mode[]) {
+    FILE* file = fopen(filename, mode);
+    if (file == NULL) {
+        printf("Error opening file\n");
+        return 0;
+    }
+    }
 
 
 // Complete the main function
@@ -49,7 +56,10 @@ int main() {
         int buffer_size = 1000;
         char line_buffer[buffer_size];
         int line_count = 0;
-
+        int filefound = 0;
+        int exitFlag = 0;
+        
+        while (1){
         printf("A: Input Filename:\n");
         printf("B: Display the total number of records in the file\n");
         printf("C: Find the date and time of the timeslot with the fewest steps\n");
@@ -58,48 +68,70 @@ int main() {
         printf("F: Find the longest continuous period where the step count is above 500 steps\n");
         printf("Q: Exit\n");
 
+        while (!exitFlag) {
         printf("Select an option: ");
         scanf(" %c", &choice);
 
         switch (choice) {
             case 'A':
-            case 'a':
+            case 'a': {
                 printf("Input Filename: ");
                 scanf("%s", user_file);
 
                 file = fopen(user_file, "r");
-                if (user_file == NULL){
+                if (file == NULL){
                 printf("Error: could not open file\n");
                 return 1;
                 }
-                fclose(file);
+                fclose(file);       
+                filefound = 1;
                 break;
+            }
 
-            case 'B':
-                while (fgets(line_buffer, buffer_size, file) != NULL) {
-                    line_count++;
+            case 'B': {
+                if (filefound == 0) {
+                printf("No file was given. Please go back and choose option A\n");
+                } else {
+                file = fopen(user_file, "r");
+                if (file == NULL) {
+                printf("Error: could not open file\n");
+                return 0;
                 }
-                printf("Total Records: %i\n", line_count);
+                line_count = 0;
+                while (fgets(line_buffer, buffer_size, file) != NULL) {
+                line_count++;
+                }
                 fclose(file);
+                printf("Total Records: %i\n", line_count);
+                }
                 break;
-            case 'C':
+            }
+            case 'C':{}
                 
                 break;
-            case 'D':
+            case 'D':{}
                 
                 break;
-            case 'E':
+            case 'E':{}
                 
                 break;
-            case 'F':
+            case 'F':{}
                 
                 break;
-            case 'Q':
+            case 'Q':{
                 printf("Program returns 0 & exits\n");
-                exit(0);
-            default:
+                exitFlag = 1;
+            }
+            default:{
                 printf("Invalid option. Please try again.\n");
-    
-        } while (choice != 'A' && choice != 'a');
-    return 0;
-    }
+            } 
+        }
+        }
+        if (exitFlag) {
+                break;
+        }
+        return 0;
+}
+}
+
+
