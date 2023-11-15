@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "utils.h"
 
 
 // Define an appropriate struct
@@ -45,14 +44,20 @@ void tokeniseRecord(const char *input, const char *delimiter,
 
 FITNESS_DATA data_array[100000];
 
-// Complete the main function
-int main() {
-    char* filename = "FitnessData_2023.csv";
-    FILE *file = fopen(filename, "r");
+FILE *open_file(char filename[], char mode[]) {
+    FILE *file = fopen(filename, mode);
     if (file == NULL) {
         printf("Error opening file\n");
-        return 1;
+        exit(1);
     }
+    return(file);
+}
+
+// Complete the main function
+int main() {
+
+    char* filename = "FitnessData_2023.csv";
+    FILE *file = fopen(filename, "r");
 
     int buffer_size = 1000;
     char line_buffer[buffer_size];
@@ -73,11 +78,13 @@ int main() {
 
     }
 
-    printf("Number of records in file: %i \n", line_count);
+    fclose(file);
+
+    printf("Number of records in file: %i\n", line_count);
     
     int i;
     for (i=0; i < 3; i++){
-        printf("Record %d: %s/%s/%d\n", i+1, data_array[i].date, data_array[i].time, data_array[i].steps);
+        printf("%s/%s/%d\n", data_array[i].date, data_array[i].time, data_array[i].steps);
     }
 
     return 0;
