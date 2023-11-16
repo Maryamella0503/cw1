@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "FitnessDataStruct.h"
+#define MAX_RECORDS 100000
 
 // Struct moved to header file
 
@@ -36,20 +37,21 @@ void tokeniseRecord(const char *input, const char *delimiter,
     free(inputCopy);
 
     }
-
     FILE* open_file(char filename[], char mode[]) {
     FILE* file = fopen(filename, mode);
     if (file == NULL) {
-        printf("Error opening file\n");
         return 0;
     }
     }
-
-
 // Complete the main function
 int main() {
         FITNESS_DATA data_array[100000]; 
-        int totalRecords = 0;
+        int mincount = 0;
+        int maxcount = 0;
+        int totalsteps = 0;
+        int longestStart = -1;
+        int longestEnd = -1;
+        int currentStart = -1;
         char choice;
         FILE*file;
         char user_file[1000];
@@ -57,8 +59,7 @@ int main() {
         char line_buffer[buffer_size];
         int line_count = 0;
         int filefound = 0;
-        int exitFlag = 0;
-        
+
         while (1){
         printf("A: Input Filename:\n");
         printf("B: Display the total number of records in the file\n");
@@ -68,7 +69,6 @@ int main() {
         printf("F: Find the longest continuous period where the step count is above 500 steps\n");
         printf("Q: Exit\n");
 
-        while (!exitFlag) {
         printf("Select an option: ");
         scanf(" %c", &choice);
 
@@ -78,12 +78,19 @@ int main() {
                 printf("Input Filename: ");
                 scanf("%s", user_file);
 
-                file = fopen(user_file, "r");
+                file = open_file(user_file, "r");
                 if (file == NULL){
                 printf("Error: could not open file\n");
                 return 1;
                 }
-                fclose(file);       
+                while (fgets(line_buffer, buffer_size, file) != NULL) {
+                char steps[30]; 
+                tokeniseRecord(line_buffer, ",", data_array[line_count].date, data_array[line_count].time, steps);
+                data_array[line_count].steps = atoi(steps);
+                    line_count++;
+                }
+                fclose(file); 
+                printf("File read successfully!\n");      
                 filefound = 1;
                 break;
             }
@@ -95,7 +102,6 @@ int main() {
                 file = fopen(user_file, "r");
                 if (file == NULL) {
                 printf("Error: could not open file\n");
-                return 0;
                 }
                 line_count = 0;
                 while (fgets(line_buffer, buffer_size, file) != NULL) {
@@ -106,32 +112,126 @@ int main() {
                 }
                 break;
             }
-            case 'C':{}
-                
+            case 'C':{
+                if (filefound == 0){
+                    if (line_count == 0) {
+                        printf("No records found because no file was given. Please go back and choose option A\n");
+                    }
+                } else {
+                file = fopen(user_file, "r");
+                if (file == NULL) {
+                    printf("Error: could not open file\n");
+                }
+                }
+                int minsteps = data_array[0].steps;
+
+                for (int i = 1; i < line_count; i++) {
+                if (data_array[i].steps < minsteps) {
+                    minsteps = data_array[i].steps;
+                    mincount = i;
+                }
+                }
+                printf("Fewest steps: %s %s\n", data_array[mincount].date, data_array[mincount].time);
                 break;
-            case 'D':{}
-                
+            }
+            case 'D':{
+                if (filefound == 0){
+                    if (line_count == 0) {
+                        printf("No records found because no file was given. Please go back and choose option A\n");
+                    }
+                } else {
+                file = fopen(user_file, "r");
+                if (file == NULL) {
+                    printf("Error: could not open file\n");
+                }
+                }
+                int maxsteps = data_array[0].steps;
+
+                for (int i = 1; i < line_count; i++) {
+                if (data_array[i].steps > maxsteps) {
+                    maxsteps = data_array[i].steps;
+                    maxcount = i;
+                }
+                }
+                printf("Largest steps: %s %s\n", data_array[maxcount].date, data_array[maxcount].time);
                 break;
-            case 'E':{}
-                
+            }
+            case 'E':{
+                if (filefound == 0){
+                    if (line_count == 0) {
+                        printf("No records found because no file was given. Please go back and choose option A\n");
+                    }
+                } else {
+                file = fopen(user_file, "r");
+                if (file == NULL) {
+                    printf("Error: could not open file\n");
+                }
+
+                for (int i = 0; i < line_count; i++) {
+                totalsteps += data_array[i].steps;
+                }
+
+                float mean = (float)totalsteps / line_count;
+                printf("Mean step count: %d\n", (int)mean);
                 break;
-            case 'F':{}
-                
+            }
+            case 'F':{
+                if (filefound == 0){
+                    if (line_count == 0){
+                        printf("No records found because no file was given. Please go back and choose option A\n");
+                    }
+                }else{
+                    file = fopen(user_file, "r");
+                    if (file == NULL){
+                        printf("Error: could not open file\n");
+                    }
+                }
+
+                for (int i = 0; i < line_count; i++){
+                    if (data_array[i].steps > 500){
+                        if (currentStart == -1){
+                            currentStart = i;
+                        }
+                    } else{
+                        if (currentStart != -1){
+                            if (i - currentStart > longestEnd - longestStart){
+                                longestStart = currentStart;
+                                longestEnd = i;
+                            }
+                        currentStart = -1;
+                        }
+                    }
+                }
+
+                if (currentStart != -1 && line_count - currentStart > longestEnd - longestStart){
+                    longestStart = currentStart;
+                    longestEnd = line_count;
+                }
+
+                if (longestStart != -1 && longestEnd != -1){
+                    printf("Longest period start: %s %s\n", data_array[longestStart].date, data_array[longestStart].time);
+                    printf("Longest period end: %s %s\n", data_array[longestEnd - 1].date, data_array[longestEnd - 1].time);
+                }else{
+                    printf("No periods found with steps greater than 500\n");
+                }
                 break;
+            }
             case 'Q':{
                 printf("Program returns 0 & exits\n");
-                exitFlag = 1;
+                return 0;
             }
             default:{
                 printf("Invalid option. Please try again.\n");
+                break;
             } 
         }
         }
-        if (exitFlag) {
-                break;
-        }
-        return 0;
+    }
+    return 0;
 }
-}
+
+
+
+
 
 
