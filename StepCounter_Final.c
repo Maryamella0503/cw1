@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "FitnessDataStruct.h"
-#define MAX_RECORDS 100000
+
 
 // Struct moved to header file
 
