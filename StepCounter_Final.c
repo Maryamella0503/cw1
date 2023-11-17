@@ -95,13 +95,15 @@ int main() {
                 break;
             }
 
-            case 'B': {
+            case 'B':
+            case 'b': {
                 if (filefound == 0) {
-                printf("No file was given. Please go back and choose option A\n");
+                    printf("No file was given. Please go back and choose option A\n");
+                    break;
                 } else {
                 file = fopen(user_file, "r");
                 if (file == NULL) {
-                printf("Error: could not open file\n");
+                    printf("Error: could not open file\n");
                 }
                 line_count = 0;
                 while (fgets(line_buffer, buffer_size, file) != NULL) {
@@ -112,10 +114,12 @@ int main() {
                 }
                 break;
             }
-            case 'C':{
+            case 'C':
+            case 'c':{
                 if (filefound == 0){
                     if (line_count == 0) {
                         printf("No records found because no file was given. Please go back and choose option A\n");
+                        break;
                     }
                 } else {
                 file = fopen(user_file, "r");
@@ -134,10 +138,12 @@ int main() {
                 printf("Fewest steps: %s %s\n", data_array[mincount].date, data_array[mincount].time);
                 break;
             }
-            case 'D':{
+            case 'D':
+            case 'd':{
                 if (filefound == 0){
                     if (line_count == 0) {
                         printf("No records found because no file was given. Please go back and choose option A\n");
+                        break;
                     }
                 } else {
                 file = fopen(user_file, "r");
@@ -156,10 +162,12 @@ int main() {
                 printf("Largest steps: %s %s\n", data_array[maxcount].date, data_array[maxcount].time);
                 break;
             }
-            case 'E':{
+            case 'E':
+            case 'e':{
                 if (filefound == 0){
                     if (line_count == 0) {
                         printf("No records found because no file was given. Please go back and choose option A\n");
+                        break;
                     }
                 } else {
                 file = fopen(user_file, "r");
@@ -175,10 +183,12 @@ int main() {
                 printf("Mean step count: %d\n", (int)mean);
                 break;
             }
-            case 'F':{
+            case 'F':
+            case 'f':{
                 if (filefound == 0){
                     if (line_count == 0){
                         printf("No records found because no file was given. Please go back and choose option A\n");
+                        break;
                     }
                 }else{
                     file = fopen(user_file, "r");
@@ -211,12 +221,11 @@ int main() {
                 if (longestStart != -1 && longestEnd != -1){
                     printf("Longest period start: %s %s\n", data_array[longestStart].date, data_array[longestStart].time);
                     printf("Longest period end: %s %s\n", data_array[longestEnd - 1].date, data_array[longestEnd - 1].time);
-                }else{
-                    printf("No periods found with steps greater than 500\n");
                 }
                 break;
             }
-            case 'Q':{
+            case 'Q':
+            case 'q': {
                 printf("Program returns 0 & exits\n");
                 return 0;
             }
