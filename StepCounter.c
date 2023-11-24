@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "FitnessDataStruct.h"
+#include <math.h>
 
 
 // Struct moved to header file
@@ -179,8 +180,8 @@ int main() {
                 totalsteps += data_array[i].steps;
                 }
 
-                float mean = (float)totalsteps / line_count;
-                printf("Mean step count: %d\n", (int)mean);
+                double mean = (double)totalsteps / line_count;
+                printf("Mean step count: %.0f\n", mean);
                 break;
             }
             case 'F':
