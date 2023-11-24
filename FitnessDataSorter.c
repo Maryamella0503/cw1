@@ -18,11 +18,16 @@ void tokeniseRecord(char *record, char delimiter, char *date, char *time, int *s
         if (ptr != NULL) {
             strcpy(time, ptr);
             ptr = strtok(NULL, &delimiter);
-            if (ptr != NULL) {
-                *steps = atoi(ptr);
+             if (ptr != NULL) {
+                if (sscanf(ptr, "%d", steps) != 1) {
+                    printf("Error: invalid steps data\n");
+                }
+                return 0;
             }
         }
     }
+    printf("Error: invalid record format\n");
+    return 1; // indicate error
 }
 
 // I used the comparator() function from my understanding of this website: https://www.geeksforgeeks.org/comparator-function-of-qsort-in-c/
