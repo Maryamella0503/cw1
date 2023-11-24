@@ -51,7 +51,6 @@ int main() {
         FITNESS_DATA data_array[100000]; 
         int mincount = 0;
         int maxcount = 0;
-        float mean = 0;
         int totalsteps = 0;
         int longestStart = -1;
         int longestEnd = -1;
@@ -142,14 +141,13 @@ int main() {
             }
             case 'E':
             case 'e':{
-                int totalsteps = 0;
+                totalsteps = 0;
                 for (int i = 0; i < line_count; i++) {
                 totalsteps += data_array[i].steps;
                 }
 
-                float mean = totalsteps / line_count;
-                int roundedmean = round(mean);
-                printf("Mean step count: %.0d\n", roundedmean);
+                double mean = (double)totalsteps / line_count;
+                printf("Mean step count: %d\n", (int)mean);
                 break;
             }
             case 'F':
@@ -193,4 +191,11 @@ int main() {
         }
         }
         return 0;
-}
+    }
+
+
+
+
+
+
+
