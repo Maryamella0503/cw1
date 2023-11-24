@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 // Define the struct for the fitness data
 typedef struct {
     char date[11];
@@ -10,7 +11,7 @@ typedef struct {
 } FitnessData;
 
 // Function to tokenize a record
-void tokeniseRecord(char *record, char delimiter, char *date, char *time, int *steps) {
+int tokeniseRecord(char *record, char delimiter, char *date, char *time, int *steps) {
     char *ptr = strtok(record, &delimiter);
     if (ptr != NULL) {
         strcpy(date, ptr);
@@ -18,16 +19,17 @@ void tokeniseRecord(char *record, char delimiter, char *date, char *time, int *s
         if (ptr != NULL) {
             strcpy(time, ptr);
             ptr = strtok(NULL, &delimiter);
-             if (ptr != NULL) {
+            if (ptr != NULL) {
                 if (sscanf(ptr, "%d", steps) != 1) {
                     printf("Error: invalid steps data\n");
+                    return 1;
                 }
                 return 0;
             }
         }
     }
     printf("Error: invalid record format\n");
-    return 1; // indicate error
+    return 1;
 }
 
 // I used the comparator() function from my understanding of this website: https://www.geeksforgeeks.org/comparator-function-of-qsort-in-c/
@@ -57,7 +59,10 @@ int main() {
 
     int i = 0;
     while (fgets(line, sizeof(line), file) != NULL) {
-        tokeniseRecord(line, ',', data[i].date, data[i].time, &data[i].steps);
+        if (tokeniseRecord(line, ',', data[i].date, data[i].time, &data[i].steps) != 0) {
+            printf("Skipping invalid record\n");
+            continue;
+        }
         i++;
     }
 
