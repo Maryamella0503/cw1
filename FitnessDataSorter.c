@@ -60,12 +60,14 @@ int main() {
     FitnessData data[100000];  
     int i = 0;
     while (fgets(line, sizeof(line), file) != NULL) {
-        if (tokeniseRecord(line, ',', data[i].date, data[i].time, &data[i].steps) != 0) {
-            printf("Skipping invalid record\n");
-            continue;
-        }
-        i++;
+    if (tokeniseRecord(line, ',', data[i].date, data[i].time, &data[i].steps) != 0) {
+        printf("Skipping invalid record\n");
+        fclose(file);
+        return 1; 
     }
+    i++;
+}
+
 
     fclose(file);
 
