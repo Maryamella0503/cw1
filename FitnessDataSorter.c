@@ -2,12 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+
+// Define the struct for the fitness data
 typedef struct {
     char date[11];
     char time[6];
     int steps;
 } FitnessData;
 
+// Function to tokenize a record
 int tokeniseRecord(char *record, char delimiter, char *date, char *time, int *steps) {
     char *ptr = strtok(record, &delimiter);
     if (ptr != NULL) {
@@ -47,7 +50,6 @@ int main() {
 
     char line[100];
     int count = 0;
-
     while (fgets(line, sizeof(line), file) != NULL) {
         count++;
     }
@@ -59,26 +61,19 @@ int main() {
     while (fgets(line, sizeof(line), file) != NULL) {
         if (tokeniseRecord(line, ',', data[i].date, data[i].time, &data[i].steps) != 0) {
             printf("Skipping invalid record\n");
-            fclose(file);
-            free(data);
-            return 1;
+            continue;
         }
         i++;
     }
 
     fclose(file);
+
     // I used qsort() function from my understanding of this website: https://www.educative.io/answers/what-is-the-qsort-function-in-c
     qsort(data, count, sizeof(FitnessData), compareRecords);
+
     // I used the strcat() function from my understanding of this website: https://www.programiz.com/c-programming/library-function/string.h/strcat
     strcat(filename, ".tsv");
-
     file = fopen(filename, "w");
-    if (file == NULL) {
-        printf("Error: could not create output file\n");
-        free(data);
-        return 1;
-    }
-
     for (int j = 0; j < count; j++) {
         fprintf(file, "%s\t%s\t%d\n", data[j].date, data[j].time, data[j].steps);
     }
@@ -89,9 +84,6 @@ int main() {
 
     return 0;
 }
-
-
-
 
 
 
