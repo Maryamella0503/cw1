@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 // Define the struct for the fitness data
 typedef struct {
     char date[11];
@@ -32,10 +31,6 @@ int tokeniseRecord(char *record, char delimiter, char *date, char *time, int *st
     return 1;
 }
 
-// I used the comparator() function from my understanding of this website: https://www.geeksforgeeks.org/comparator-function-of-qsort-in-c/
-int compareRecords(const void *a, const void *b) {
-    return ((FitnessData *)b)->steps - ((FitnessData *)a)->steps;
-}
 
 int main() {
     char filename[100];
@@ -54,9 +49,15 @@ int main() {
         count++;
     }
 
-    FitnessData *data = (FitnessData *)malloc(count * sizeof(FitnessData));
-    rewind(file);
 
+    fclose(file);
+    file = fopen(filename, "r");
+    if (file == NULL) {
+        printf("Error: failed to reopen file\n");
+        return 1;
+    }
+
+    FitnessData data[100000];  
     int i = 0;
     while (fgets(line, sizeof(line), file) != NULL) {
         if (tokeniseRecord(line, ',', data[i].date, data[i].time, &data[i].steps) != 0) {
@@ -68,23 +69,31 @@ int main() {
 
     fclose(file);
 
-    // I used qsort() function from my understanding of this website: https://www.educative.io/answers/what-is-the-qsort-function-in-c
-    qsort(data, count, sizeof(FitnessData), compareRecords);
+    for (int m = 0; m < count - 1; m++) {
+        for (int n = 0; n < count - m - 1; n++) {
+            if (data[n].steps < data[n + 1].steps) {
+                FitnessData temp = data[n];
+                data[n] = data[n + 1];
+                data[n + 1] = temp;
+            }
+        }
+    }
 
-    // I used the strcat() function from my understanding of this website: https://www.programiz.com/c-programming/library-function/string.h/strcat
     strcat(filename, ".tsv");
     file = fopen(filename, "w");
+    if (file == NULL) {
+        printf("Error: could not create output file\n");
+        return 1;
+    }
+
     for (int j = 0; j < count; j++) {
         fprintf(file, "%s\t%s\t%d\n", data[j].date, data[j].time, data[j].steps);
     }
 
     fclose(file);
 
-    free(data);
-
     return 0;
 }
-
 
 
 
