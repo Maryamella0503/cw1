@@ -2,13 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 typedef struct {
     char date[11];
     char time[6];
     int steps;
 } FitnessData;
-
 
 int tokeniseRecord(char *record, char delimiter, char *date, char *time, int *steps) {
     char *ptr = strtok(record, &delimiter);
@@ -50,21 +48,20 @@ int main() {
     char line[100];
     int count = 0;
 
-
     while (fgets(line, sizeof(line), file) != NULL) {
         count++;
     }
 
-
     FitnessData *data = (FitnessData *)malloc(count * sizeof(FitnessData));
-    rewind(file);  
+    rewind(file);
 
     int i = 0;
     while (fgets(line, sizeof(line), file) != NULL) {
-
         if (tokeniseRecord(line, ',', data[i].date, data[i].time, &data[i].steps) != 0) {
             printf("Skipping invalid record\n");
-            continue;
+            fclose(file);
+            free(data);
+            return 1;
         }
         i++;
     }
@@ -92,4 +89,10 @@ int main() {
 
     return 0;
 }
+
+
+
+
+
+
 
