@@ -80,7 +80,7 @@ int main() {
             }
         }
     }
-// I used the strcat() function from my understanding of this website: https://www.programiz.com/c-programming/library-function/string.h/strcat
+
     strcat(filename, ".tsv");
     file = fopen(filename, "w");
     if (file == NULL) {

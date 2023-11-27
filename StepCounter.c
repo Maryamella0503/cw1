@@ -84,13 +84,13 @@ int main() {
             
                 file = open_file(user_file, "r");
                 if (file == NULL){
-                printf("Error: could not open file\n");
-                return 1;
+                    printf("Error: could not open file\n");
+                    return 1;
                 }
                 while (fgets(line_buffer, buffer_size, file) != NULL) {
-                char steps[30]; 
-                tokeniseRecord(line_buffer, ",", data_array[line_count].date, data_array[line_count].time, steps);
-                data_array[line_count].steps = atoi(steps);
+                    char steps[30]; 
+                    tokeniseRecord(line_buffer, ",", data_array[line_count].date, data_array[line_count].time, steps);
+                    data_array[line_count].steps = atoi(steps);
                     line_count++;
                 }
                 fclose(file); 
@@ -101,17 +101,13 @@ int main() {
 
             case 'B':
             case 'b': {
-                file = fopen(user_file, "r");
-                if (file == NULL) {
-                    printf("Error: could not open file\n");
-                break;
+
+                if (line_count == 0) {
+                    printf("Error: No data available\n");
+                    break;
                 }
-                    line_count = 0;
-                    while (fgets(line_buffer, buffer_size, file) != NULL) {
-                        line_count++;
-                    }
-                    fclose(file);
-                    printf("Total Records: %i\n", line_count);
+
+                printf("Total records: %d\n", line_count);
                 break;
             }
             case 'C':
@@ -147,8 +143,8 @@ int main() {
                 totalsteps += data_array[i].steps;
                 }
 
-                float mean = totalsteps / line_count;
-                int roundedmean = round(mean);
+                float mean = (float)totalsteps / line_count;
+                int roundedmean = (int)round(mean);
                 printf("Mean step count: %.0d\n", roundedmean);
                 break;
             }
